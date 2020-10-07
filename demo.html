@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Accept FormAssembly Cookies</title>
+    <style>
+        #acceptCookiesBlock{
+            padding: 20px;
+            background-color: #2f73e6;
+            color: white;
+            margin-bottom: 15px;
+        }
+        #acceptCookiesBlock a{
+            color: white;
+        }
+        #acceptCookiesBlock button{
+            margin-left: 15px;
+            color: white;
+            font-weight: bold;
+            float: right;
+            font-size: 22px;
+            line-height: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            background: none;
+            border: none;
+        }
+        #acceptCookiesBlock button:hover{
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <form id="formURLEntry">
+        <label for="formURL">Enter FormAssembly Site:</label><br/>
+        <input type="text" id="formURL" name="formURL" value="https://tfaforms.localhost:8443/"><br/><br/>
+        <label for="formID">Enter Form ID:</label><br/>
+        <input type="text" id="formURL" name="formID" value="3"><br/><br/>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="acceptCookiesBlock" style="display: none;">
+        <button onclick="acceptFACookies()">Accept</button>
+        This site uses cookies to provide you with a great user experience.  By using FormAssembly, you accept our <a href="https://www.formassembly.com/terms-of-service/">terms of service</a>.
+    </div>
+
+    <iframe id="formIframe"
+        style="width:100%; min-height: 800px; height: 100%; display: none;"></iframe>
+
+    <script>
+        var acceptedFACookies = false;
+        function redirectToFAFix(){
+            var cookieFixUrl = params.get('formURL') + "iframe_fix.html";
+            document.cookie = 'iframe_cookie_fix=fixed; expires=Tue, 19 Jan 2099 03:14:07 UTC; path=/';
+            window.location.replace(cookieFixUrl);
+        }
+        function acceptFACookies(){
+            acceptedFACookies = true;
+            redirectToFAFix();
+        }
+        const params = new URLSearchParams(window.location.search);
+        if (!document.cookie.match(/^(.*;)?\s*iframe_cookie_fix\s*=\s*[^;]+(.*)?$/) && params.has('formURL')) {
+            if(!acceptedFACookies){
+                document.getElementById('acceptCookiesBlock').style.display = 'block';
+            }else {
+                redirectToFAFix();
+            }
+        }
+        if(params.has('formURL') && params.has('formID')){
+            document.getElementById('formIframe').src = params.get('formURL')+params.get('formID');
+            document.getElementById('formIframe').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
