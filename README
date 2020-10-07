@@ -5,3 +5,5 @@ The purpose of this repository is to store a simple fix to allow users to accept
 The URL of the form itself will need to be setup exactly as it is today and will continue to be the source of the iframe.  The HTML and JavaScript in the index.html file will need to be updated in the Salesforce app in order to allow the user to accept cookies from FormAssembly and redirect the user to the proper form.
 
 The demo is for testing purposes in order to specify a FormAssembly domain URL, such as https://app.formassembly.com/, which will be utilized to resolve the iframe_fix.html page, and the Form ID.
+
+Important to note: the current functionality to generate the iFrame URL must remain in place and the same URL (without subsequent information beyond the domain) must be used to navigate to the iframe_fix.html file on the public web server where the form is hosted.
