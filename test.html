@@ -2,81 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Accept FormAssembly Cookies</title>
-    <style>
-        #acceptCookiesBlock{
-            border: 2px solid #9eadba;
-            background-color: #dfe6ee;
-            color: #3b4955;
-            margin-bottom: 15px;
-            padding: 20px;
-            font-size: 18px;
-            line-height: 9px;
-        }
-        #acceptCookiesBlock a{
-            color: white;
-        }
-        #acceptCookiesBlock button{
-            margin-left: 15px;
-            margin-top: -16px;
-            color: white;
-            float: right;
-            cursor: pointer;
-            transition: 0.3s;
-            background: #19af9f;
-            border: none;
-            border-radius: 5px;
-            padding: 12px 20px;
-            font-size: 16px;
-        }
-        #acceptCookiesBlock button:hover{
-            color: black;
-        }
-    </style>
+    <link href="/dist/slds/styles/salesforce-lightning-design-system.css" rel="stylesheet" type="text/css" />
+    <link href="/font/css/AvenirLTPro.css" rel="stylesheet" type="text/css" />
+    <title>Test Modal</title>
     <script>
-    //    var cookieFixUrl = "https://uat-1-app.cust.fd.vwsrv.net/iframe_fix.html";
-        var cookieFixUrl = "https://app.formassembly.localhost:8443/iframe_fix.html";
-        var acceptedFACookies = false;
-        function redirectToFAFix(){
-            sessionStorage.setItem('iframe_cookie_fix', 'fixed');
-            window.location.replace(cookieFixUrl+"?returnUrl="+window.location.href);
-        }
-        function acceptFACookies(){
-            acceptedFACookies = true;
-            redirectToFAFix();
-        }
-        if(!sessionStorage.getItem('iframe_cookie_fix')){
-    //    if (!document.cookie.match(/^(.*;)?\s*iframe_cookie_fix\s*=\s*[^;]+(.*)?$/)) {
-            if(!acceptedFACookies){
-                window.onload = function() {
-                    document.getElementById('acceptCookiesBlock').style.display = 'block';
-                };
-            }else {
-                redirectToFAFix();
+        function showModal(){
+            var hasStorageAccessMethod = false;
+            try {
+                document.hasStorageAccess();
+                hasStorageAccessMethod = true;
+            }catch(e){
+                hasStorageAccessMethod = false; //document.hasStorageAccess likely doesn't exist
             }
-        }else{
-            window.onload = function() {
-                document.getElementById('formIframe').style.display = 'block';
-            };
+            if(sessionStorage.getItem('faCookieModal') || !hasStorageAccessMethod){
+                document.getElementsByClassName('fa-modal')[0].style.display = 'none';
+                document.getElementsByClassName('fa-modal-background')[0].style.display = 'none';
+            }
+        }
+        function navigateToFormAssembly(){
+            sessionStorage.setItem('faCookieModal', 'shown');
+            window.location.href = 'https://tfaforms.localhost:8443/iframe_fix_popup.html?returnUrl='+window.location.href;
         }
     </script>
 </head>
-<body>
-
-
-<!--<iframe id="formIframe"-->
-<!--        src="https://uat-1-app.cust.fd.vwsrv.net/328"-->
-<!--        sandbox="allow-modals allow-scripts allow-same-origin allow-top-navigation allow-storage-access-by-user-activation"-->
-<!--        style="width: 100%; height: 100%; min-height: 800px; display: none;"></iframe>-->
-
-    <div id="acceptCookiesBlock" style="display: none;">
-        <button onclick="acceptFACookies()">Got it</button>
-        We use cookies from our third party partner (FormAssembly) for functional, strictly necessary purposes.
+<body onload="showModal()">
+<section role="dialog" tabindex="-1" aria-label="You will need to accept cookies from FormAssembly"
+         aria-modal="true" aria-describedby="modal-content-id-1" class="fa-modal slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+            <p>We will take you to a different site in order to accept cookies from FormAssembly.com</p>
+        </div>
+        <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_brand" onclick="navigateToFormAssembly()">Accept</button>
+        </footer>
     </div>
-    <iframe id="formIframe"
-            src="https://app.formassembly.localhost:8443/2"
-            sandbox="allow-modals allow-scripts allow-same-origin allow-top-navigation allow-storage-access-by-user-activation"
-            style="width: 100%; height: 100%; min-height: 800px; display: none;"></iframe>
+</section>
+<div class="fa-modal-background slds-backdrop slds-backdrop_open"></div>
 
+<iframe
+        sandbox="allow-popups allow-forms allow-modals allow-scripts allow-same-origin allow-top-navigation allow-storage-access-by-user-activation"
+        frameborder="0"
+        id="20:2;a_iframe"
+        style="width: 100%; height: 800px;"
+        data-aura-rendered-by="26:2;a"
+        class=" tfaFormAssemblyForm"
+        data-aura-class="tfaFormAssemblyForm"
+        data-fa-iframe-unique-id="gqc5wtpw0i"
+        src="https://tfaforms.localhost:8443/iframe_fix.html?returnUrl=https://tfaforms.localhost:8443/2">
+
+</iframe>
+<!--src="https://tfaforms.localhost:8443/iframe_fix.html?returnUrl=https://app-test.tfaforms.net//authenticator_salesforce/acknowledge/00DB0000000EvSs!AQ4AQJ1phb_EG9JH8ISINjsmeOUQQAUIvvnwmQlJfQ3i7Bi.yvHs4RZI1iZsk.jucB82dGnRTsahurHdkYUUOhlXVsntONEF/005B0000006EF7YIAW/4761953/bdfba506c951d70dee94addc7ec45bcc154e595e/https%253A%252F%252Fwinter21devcommunity-developer-edition.gus.force.com%252Fservices%252FSoap%252Fu%252F38.0%252F00DB0000000EvSsMAK?faIframeUniqueId=gqc5wtpw0i&amp;hostURL=https%3A%2F%2Fwinter21devcommunity-developer-edition.gus.force.com%2Fs%2F&amp;">-->
+<!--src="https://ce95b8dc322d.ngrok.io/iframe_fix.html?returnUrl=https://app-test.tfaforms.net//authenticator_salesforce/acknowledge/00DB0000000EvSs!AQ4AQJ1phb_EG9JH8ISINjsmeOUQQAUIvvnwmQlJfQ3i7Bi.yvHs4RZI1iZsk.jucB82dGnRTsahurHdkYUUOhlXVsntONEF/005B0000006EF7YIAW/4761953/bdfba506c951d70dee94addc7ec45bcc154e595e/https%253A%252F%252Fwinter21devcommunity-developer-edition.gus.force.com%252Fservices%252FSoap%252Fu%252F38.0%252F00DB0000000EvSsMAK?faIframeUniqueId=gqc5wtpw0i&amp;hostURL=https%3A%2F%2Fwinter21devcommunity-developer-edition.gus.force.com%2Fs%2F&amp;">-->
+<!-- src="https://app-test.tfaforms.net/iframe_fix.html?returnUrl=https://app-test.tfaforms.net//authenticator_salesforce/acknowledge/00DB0000000EvSs!AQ4AQJ1phb_EG9JH8ISINjsmeOUQQAUIvvnwmQlJfQ3i7Bi.yvHs4RZI1iZsk.jucB82dGnRTsahurHdkYUUOhlXVsntONEF/005B0000006EF7YIAW/4761953/bdfba506c951d70dee94addc7ec45bcc154e595e/https%253A%252F%252Fwinter21devcommunity-developer-edition.gus.force.com%252Fservices%252FSoap%252Fu%252F38.0%252F00DB0000000EvSsMAK?faIframeUniqueId=gqc5wtpw0i&amp;hostURL=https%3A%2F%2Fwinter21devcommunity-developer-edition.gus.force.com%2Fs%2F&amp;">-->
 </body>
 </html>

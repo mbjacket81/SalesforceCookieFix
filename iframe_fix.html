@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Allow FormAssembly iframe</title>
+    <link href="/dist/slds/styles/salesforce-lightning-design-system.css" rel="stylesheet" type="text/css" />
+    <link href="/font/css/AvenirLTPro.css" rel="stylesheet" type="text/css" />
+    <style>
+        html, body{
+            background-color: #dfe6ee;
+            font-family: Avenir, sans-serif;
+        }
+        .slds-modal__container{
+            padding: 7rem 0;
+        }
+        .slds-modal__container .slds-modal__container{
+            width: initial;
+        }
+        #accessDenied{
+            background: red;
+            color: white;
+        }
+        #allowInteractionBlock {
+            text-align: center;
+            width: 100%;
+            min-height: 400px;
+        }
+        #allowInteractionBlock h1{
+            font-size: 32px;
+            padding: 8px;
+        }
+        .container {
+            background-color:white;
+            padding: 2px 16px;
+            max-width: 640px;
+            min-height: 270px;
+            width: 100%;
+        }
+        .container h3{
+            font-size: 16px;
+            padding: 30px 30px 0px 30px;
+        }
+        .container h2{
+            font-size: 20px;
+            padding: 30px 0px;
+        }
+        #allowInteractionBlock button{
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            background: #19af9f;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 25px;
+            font-size: 18px;
+        }
+        #allowInteractionBlock button:hover{
+            color: whitesmoke;
+        }
+        #allowInteractionBlock .footer{
+            padding: 15px 0px;
+            font-size: 14px;
+        }
+    </style>
+    <script>
+        var hasStorageAccess = false;
+        function goToOriginalUrl(){
+            const params = new URLSearchParams(window.location.search);
+            var goToUrl = params.has('returnUrl') ? params.get('returnUrl') : document.referrer;
+            window.location.replace(goToUrl);
+        }
+        function checkStorageAccess(){
+            try {
+                document.hasStorageAccess().then(
+                    function(storageAccessApproved){
+                        console.log('hasStorageAccess - '+storageAccessApproved);
+                        hasStorageAccess = storageAccessApproved;
+                    }
+                );
+            }catch(e){
+                //document.hasStorageAccess likely doesn't exist
+                hasStorageAccess = true;
+            }
+        }
+        function makeRequestWithUserGesture() {
+            if (!hasStorageAccess) {
+                document.requestStorageAccess().then(
+                    function() {
+                        goToOriginalUrl();
+                    },
+                    function (err) {
+                        document.getElementById('accessDenied').style.display = 'block';
+                        //just try redirecting the user to the original url
+                        goToOriginalUrl();
+                    }
+                );
+            } else {
+                goToOriginalUrl();
+            }
+        }
+
+    </script>
+</head>
+<body onload="checkStorageAccess()">
+    <div class="slds-modal__container">
+        <div class="slds-modal__container">
+            <div id="allowInteractionBlock">
+                <h1>Accept Cookies?</h1>
+                <div class="container">
+                    <h3 class="header-3">We use cookies from our third party partner (FormAssembly) for functional, strictly necessary purposes.</h3>
+                    <h2 class="header-2">Please click "Accept Cookies" to proceed further.</h2>
+                    <button onclick="makeRequestWithUserGesture()" id="fa-accept-cookies-button">
+                        Accept Cookies
+                    </button>
+                    <div class="footer">
+                        <a href="https://www.formassembly.com/privacy-policy/" target="_blank">Learn more about FormAssembly Privacy Policy</a>
+                    </div>
+                </div>
+                <div id="accessDenied" style="display: none;">
+                    <strong>Access was denied and you may not proceed.</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
